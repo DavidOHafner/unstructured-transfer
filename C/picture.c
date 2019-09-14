@@ -1,54 +1,90 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "utils.h"
 #include "MyroC.h"
-
-const int width = 256;
-const int height = 192;
+#include "picture.h"
 
 #define xyloop for(int x = 0; x < width; x++) for(int y = 0; y < height; y++)
 
-typedef struct {
-  int channels;
-  float data[][width][height];
-} Pic;
-
-typedef struct {
-  float data[width][height];
-} Channel;
-
-//Convert to external forms
-Pic * PictureToPic(Picture * in) {
-  Pic * out = malloc(sizeof(Pic) + 3*sizeof(float)*width*height);
-out->channels = 3;
-xyloop {
-out->data[0][x][y] = in->pix_array[y][x].R;
-out->data[1][x][y] = in->pix_array[y][x].G;
-out->data[2][x][y] = in->pix_array[y][x].B;
-}	return out;
-}
-Picture * PicToPicture(Pic * in) {
-Picture * out = alloc(Picture);
-xyloop
-		out->pix_array[y][x] = (Pixel) {in[0][x][y], in[1][x][y], in[2][x][y]};
-        
-	return out;
-}
-
 //External accesses
-Pic * getPic() {
-  Picture in = rTakePicture();
-  Pic out = PicturetoPic(&in);
-  reutrn out;
+Picture * getPicture() {
+  Picture * out = alloc(Picture);
+  *out = rTakePicture();
+  return out;
+}
+void displayPicture(Picture * pic, char * name) {
+  rDisplayPicture(*pic, -3, name);
+}
+void displayPictureForever(Picture * pic, char * name) {
+  rDisplayPicture(*pic, 0, name);
 }
 
-void displayPic(Pic * pix, char * name) {
-
+Channel * redness(Picture * in) {
+  Channel * out = alloc(Channel);
+  xyloop {
+    Pixel px = in->pix_array[y][x];
+    //float sum = px.R*299+px.B*587+px.G*114;
+    float red = px.R*2-px.G-px.B+255*2;//0..255*4
+    float bg = abs(px.B-px.G);//0..255
+    out->data[x][y] = (red-bg)/4.0;//0..255
+    //printf("%d, %d, %d @ (%d, %d) -> %f\n", px.R, px.G, px.B, x, y, out->data[x][y]);
+  }
+  return out;
+}
+Channel * getGrey(Picture * in) {
+  Channel * out = alloc(Channel);
+  xyloop {
+    Pixel px = in->pix_array[y][x];
+    float sum = px.R*299+px.B*587+px.G*114;
+    out->data[x][y] = sum/1000.0;
+  }
+  return out;
+}
+Channel * getRed(Picture * in) {
+  Channel * out = alloc(Channel);
+  xyloop {
+    Pixel px = in->pix_array[y][x];
+    out->data[x][y] = px.R;
+  }
+  return out;
+}
+Channel * getGreen(Picture * in) {
+  Channel * out = alloc(Channel);
+  xyloop {
+    Pixel px = in->pix_array[y][x];
+    out->data[x][y] = px.G*1.2;
+  }
+  return out;
+}
+Channel * getBlue(Picture * in) {
+  Channel * out = alloc(Channel);
+  xyloop {
+    Pixel px = in->pix_array[y][x];
+    out->data[x][y] = px.B*1.1;
+  }
+  return out;
 }
 
-Channel * redness(Pic * in) {
-	Channel * out = alloc(out);
-	xyloop
-		out->data[x][y] = in->data[0][x][y]-in->data[1][x][y]-in->data[2][x][y]-abs(in->data[1][x][y]-in->data[2][x][y]);
-	return out;
+Picture * createPictureFromChannel(Channel * channel) {
+  Picture * out = alloc(Picture);
+  float min = 0, max = 255;
+  xyloop {
+    float val = channel->data[x][y];
+    if(val < min) min = val;
+    if(val > max) max = val;
+  }
+  xyloop {
+    printf("%f -> ", channel->data[x][y]);
+    int val = (channel->data[x][y]-min)*255/(max-min);
+    printf("%d\n", val);
+    out->pix_array[y][x] = (Pixel) {val, val, val};
+  }
+  return out;
+}
+Picture * createPictureFromChannels(Channel * red, Channel * green, Channel * blue) {
+  Picture * out = alloc(Picture);
+  xyloop 
+    out->pix_array[y][x] = (Pixel) {red->data[x][y], green->data[x][y]/1.2, blue->data[x][y]/1.1};
+  return out;
 }
