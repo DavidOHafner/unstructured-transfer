@@ -3,6 +3,7 @@
 #include "arrays.h"
 #include "MyroC.h"
 #include "picture.h"
+#include "testlib.h"
 
 int main(void) {
   printf("Hello World\n");
@@ -37,21 +38,39 @@ int main(void) {
   printf("%d\n", complementsum(0, 1, y));
 
 
+  
   printf("Starting\n");
   rConnect("/dev/rfcomm0");
   printf("Started\n");
   //while(true) {
-    Picture * p = getPicture();
+  Picture * p = getPicture();
     Channel * red = getRed(p);
     Channel * green = getGreen(p);
     Channel * blue = getBlue(p);
-    Channel * grey = getGrey(p);
+  /*Channel * grey = getGrey(p);
     Picture * out = createPictureFromChannels(red, green, blue);
-    Picture * out2 = createPictureFromChannel(grey);
+    Picture * out2 = createPictureFromChannel(grey);*/
+    Picture * outR = createPictureFromChannel(red);
+    Picture * outG = createPictureFromChannel(green);
+    Picture * outB = createPictureFromChannel(blue);
+    //displayPictureForever(out, "Out");
+    //displayPictureForever(out2, "Out2");
+    displayPictureForever(outR, "OutR");
+    displayPictureForever(outG, "OutG");
+    displayPictureForever(outB, "OutB");
+    Channel * red2 = redness(p);
+    Picture * out3 = createPictureFromChannel(red2);
     displayPictureForever(p, "In");
-    displayPictureForever(out, "Out");
-    displayPictureForever(out2, "Out2");
-  //}
+    displayPictureForever(out3, "Out3");
+
+    for(int x = 0; x < width; x++)
+      printf("%d: (%d, %d, %d) -> %f\n", x,
+             p->pix_array[height-1][x].R,
+             p->pix_array[height-1][x].G,
+             p->pix_array[height-1][x].B,
+             red2->data[x][height-1]);
+    
+    //  }
   
   return 0;
 

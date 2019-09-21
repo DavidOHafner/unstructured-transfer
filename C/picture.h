@@ -1,8 +1,11 @@
 #ifndef PICTURE
 #define PICTURE
 
+#include "MyroC.h"
+
 #define width 256
 #define height 192
+#define xyloop for(int x = 0; x < width; x++) for(int y = 0; y < height; y++)
 
 typedef struct {
   float data[width][height];

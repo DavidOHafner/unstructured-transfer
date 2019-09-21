@@ -1,0 +1,10 @@
+clear
+
+gcc -I/home/walker/Myro/include/MyroC -L/home/walker/Myro/lib -lMyroC -ljpeg -lbluetooth -Wall -Werror -pedantic-errors -lm Ctest.c picture.c testlib.c stack.c arrays.c
+
+if [ $? -eq 0 ]
+then
+        ./a.out
+else
+        echo "compile: FAIL"
+fi

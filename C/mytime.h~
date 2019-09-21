@@ -1,0 +1,4 @@
+#ifndef MYTIME
+#define MYTIME
+double myTime();
+#endif
