@@ -1,13 +1,27 @@
 #include <time.h>
 #include <stdio.h>
 #include <math.h>
-#include "myroc.h"
+#include "MyroC.h"
 
 const int width = 256, height = 192, stdevish = 10;
 const double speed = .5, time_guess=3, sensetivity = .0005;
 
+
+double doubletime() {
+ 	struct timespec t;
+ 	clock_gettime(CLOCK_REALTIME,&t);
+ 	return t.tv_sec + t.tv_nsec/1000.0/1000.0/1000.0;
+}
+void doublesleep(double t) {
+  struct timespec ts = {(time_t) ((long) t), (long) ((t-((long) t))*1000*1000*1000)};
+ 	nanosleep(&ts, NULL);
+}
+double normal(double x, double y) {
+	return exp(-(x-y)*(x-y)/stdevish/stdevish);
+}
+
 int main() {
-	prinf("Init\n");
+	printf("Init\n");
 
 	Picture p0;
 	double dist_traveled = 0;
@@ -55,28 +69,15 @@ int main() {
 			dist_to_travel = (1-position)*dist_traveled/(n+position);
 		}
 
+		dist_traveled += dist_to_travel;
 
 		//------------------------------------------------------------------------
 
-		travel_time = time_guess*dist_to_travel;
-		time_traveled += travel_time;
+		double travel_time = time_guess*dist_to_travel;
 
 		double t1 = doubletime();
 		doublesleep(t0+travel_time-t1);
 
  		rMotors(0, 0);
  	}
-}
-
-double doubletime() {
- 	struct timespec t;
- 	clock_gettime(CLOCK_REALTIME,&t);
- 	return t.tv_sec + t.tv_nsec/1000.0/1000.0/1000.0;
-}
-void doublesleep(double t) {
- 	struct timespec ts = {(time_t) ((long) t), (long) ((t%1)*1000*1000*1000)};
- 	nanosleep(ts, NULL);
-}
-double normal(double x, double y) {
-	return exp(-(x-y)*(x-y)/stdevish/stdevish);
 }
