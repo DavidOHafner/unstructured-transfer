@@ -6,7 +6,7 @@ struct Frame {
   float data[256][192];
 };
 
-void main() {
+int main() {
 
   struct Frame * f = malloc(sizeof(struct Frame));
   for(int x = 0; x < 256; x++)
