@@ -4,7 +4,7 @@
 #include "MyroC.h"
 
 const int width = 256, height = 192, stdevish = 10;
-const double speed = .5, time_guess=6, sensetivity = .0005;
+const double speed = .7, time_guess=5, sensetivity = .0005;
 
 
 double doubletime() {
@@ -31,7 +31,7 @@ int main() {
   printf("Started\n");
 
   for(int n = 0;;n++) {
-    rBeep(1, 550);
+    rBeep(.2, 500);
 
     rMotors(-speed, speed);
 		
