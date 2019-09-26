@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include "arraylist.h"
+
+int main() {
+  ArrayList * arr = arraylist_new();
+  for(int i = 0; i < 10; i++) {
+    arraylist_append(arr, &i);
+  }
+  for(int i = 0; i < 10; i++) {
+    printf("%d\n" *arraylist_get(arr, i);
+  }
+  for(int i = 0; i < 10; i++) {
+    arraylist_set(arr, i, &(2*i));
+  }
+  for(int i = 0; i < 10; i++) {
+    printf("%d\n" *arraylist_pop(arr);
+  }
+  
+}
+    

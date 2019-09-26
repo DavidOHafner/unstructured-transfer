@@ -1,0 +1,74 @@
+#include "utils.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct {
+  void *** data;
+  int size;
+  int columns;
+} ArrayList;
+
+ArrayList * arraylist_new() {
+  ArrayList * out = alloc(ArrayList);
+  out->size = 0;
+  out->columns = 0;
+  out->data = NULL;
+  return out;
+}
+
+int * address (ArrayList * arr, int index) {
+  if(index < 0 || index >= arr->size)
+    printf("arraylist index %d out of bounds [0, %d)\n", index, arr->size);
+  int * out = malloc(sizeof(int)*2);
+  out[0] = 31 - __builtin_clz(index+1);
+  out[1] = index - ((1<<out[0]) - 1);
+  return out;
+}
+
+void arraylist_set(ArrayList * arr, int index, void * element) {
+  printf("X\n");
+  int * adr = address(arr, index);
+  printf("%d, %d, %d, %p\n", index, arr->size, arr->columns, (void*)arr->data);
+  arr->data[adr[0]][adr[1]] = element;
+  printf("X\n");
+}
+
+void * arraylist_get(ArrayList * arr, int index) {
+  
+  //printf("C5\n");
+  int * adr = address(arr, index);
+  //printf("%d, %d, %d\n", index, adr[0], adr[1]);
+  //printf("-0-%p, %ld\n", (void*)(arr->data), sizeof(arr->data));
+  //printf("-1-%p, %ld\n", (void*)(arr->data[0]), sizeof(arr->data[0]));
+  //printf("-2-%p, %ld\n", (void*)(arr->data[0][0]), sizeof(arr->data[0][0]));
+  return arr->data[adr[0]][adr[1]];
+  //printf("C7\n");
+}
+
+void arraylist_append(ArrayList * arr, void * element) {
+  arr->size++;
+  printf("b\n");
+  if(arr->size != 1) printf("!!A0!!!%d\n", *(int*)arraylist_get(arr, 0));
+  if(arr->size == 1<<arr->columns) {
+  if(arr->size != 1) printf("!!A1!!!%d\n", *(int*)arraylist_get(arr, 0));
+  printf("c1, %ld\n", sizeof(void*)*(arr->columns+1));
+    void *** data = malloc(sizeof(void*)*(arr->columns+1));
+    if(arr->columns != 0)
+      memcpy(data, arr->data, sizeof(void*)*arr->columns);
+    void ** newcolumn = malloc(sizeof(void*)*(1<<arr->columns));
+    data[arr->columns] = newcolumn;
+    free(arr->data);
+    arr->data = data;
+    arr->columns++;
+  }
+  arraylist_set(arr, arr->size-1, element);
+}
+
+void * arraylist_pop(ArrayList * arr) {
+  if(arr->size == 0)
+    printf("arraylist_pop on empty array\n");
+  void * out = arraylist_get(arr, arr->size-1);
+  arr->size--;
+  return out;
+}
