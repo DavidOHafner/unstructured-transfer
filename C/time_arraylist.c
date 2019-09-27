@@ -42,7 +42,7 @@ int main() {
     sltime += sleeptime;
   }*/
 
-  for(int n = 1;; n*=1) {
+  for(int n = 1;; n*=2) {
 
     double t0 = doubletime();
 
@@ -52,19 +52,19 @@ int main() {
     for(int i = 0; i < n*2; i++)
       arraylist_append(arr, ptr(i));
     for(int i = 0; i < n; i++)
-      total += *(int*)arraylist_pop(arr);
+      total += *(int*)arraylist_pop(arr);//(n+2*n-1)*n/2
     for(int i = 0; i < n; i++)
       arraylist_set(arr, i, ptr(*(int*)arraylist_get(arr, i)+1));
     for(int i = 0; i < n; i++)
-      total += *(int*)arraylist_get(arr, i);
+      total += *(int*)arraylist_get(arr, i);//(1+n)*n/2
     for(int i = 0; i < n; i++)
-      total += *(int*)arraylist_pop(arr);
-
+      total += *(int*)arraylist_pop(arr);//(1+n)*n/2
+         //(5n+1)*n/2
     double t1 = doubletime();
 
-    long t_should = (n+(n*2-1))*n/2 + 1+n;
+    long t_should = (n*5+1)*n/2;
     if(total != t_should)
-      printf("Oops!\n");
+      printf("Oops! %d, %ld, %ld\n", n, total, t_should);
 
     double t = t1-t0;
     double k = n*7;
