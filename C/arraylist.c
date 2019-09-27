@@ -67,6 +67,6 @@ void * arraylist_pop(ArrayList * arr) {
   return out;
 }
 
-int arraylist_size(Arraylist * arr) {
-  arr->size;
+int arraylist_size(ArrayList * arr) {
+  return arr->size;
 }

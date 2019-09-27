@@ -1,8 +1,8 @@
 #ifndef ARRAYLISTUTILS
 #define ARRAYLISTUTILS
 
-#include "arralist.h"
+#include "arraylist.h"
 
-void arraylist_free_with_alll_elements(ArrayList * arr);
+void arraylist_free_with_all_elements(ArrayList * arr);
 
 #endif
