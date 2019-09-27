@@ -18,7 +18,7 @@ int main() {
 
     ArrayList * arr = arraylist_new();
 
-    int total = 0;
+    long total = 0;
     for(int i = 0; i < n*2; i++)
       arraylist_append(arr, ptr(i));
     for(int i = 0; i < n; i++)
@@ -35,14 +35,14 @@ int main() {
 
     arraylist_free_with_all_elements(arr);
 
-    int t_should = (n*5+1)*n/2;
+    long t_should = (n*5l+1)*n/2;
     if(total != t_should)
       printf("Computational Inaccuracy: n=%d, total=%ld, expected=%ld\n", n, total, t_should);
 
     double t = t1-t0;
     double k = n*7;
 
-    printf("n = %d, K = %lf\n", n, 600*1000*1000/k*t);//  23.0
+    printf("n = %d, K = %lf\n", n, 600*1000*1000/k*t);//  from n = 10,000 to 2,000,000, K = 23.0, with higher n, the system runs low and out of memory.
 
   }
 }
