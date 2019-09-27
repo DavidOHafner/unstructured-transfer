@@ -17,6 +17,13 @@ ArrayList * arraylist_new() {
   return out;
 }
 
+void arraylist_free(ArrayList * arr) {
+  for(int i = 0; i < arr->columns; i++)
+    free(arr->data[i]);
+  free(arr->data);
+  free(arr);
+}
+
 int * address (ArrayList * arr, int index) {
   if(index < 0 || index >= arr->size)
     printf("arraylist index %d out of bounds [0, %d)\n", index, arr->size);
@@ -58,4 +65,8 @@ void * arraylist_pop(ArrayList * arr) {
   void * out = arraylist_get(arr, arr->size-1);
   arr->size--;
   return out;
+}
+
+int arraylist_size(Arraylist * arr) {
+  arr->size;
 }

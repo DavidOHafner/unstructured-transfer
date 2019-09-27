@@ -1,4 +1,4 @@
-#include "arraylist.h"
+#include "arraylistutils.h"
 #include "doubletime.h"
 #include "utils.h"
 #include <stdio.h>
@@ -61,6 +61,8 @@ int main() {
       total += *(int*)arraylist_pop(arr);//(1+n)*n/2
          //(5n+1)*n/2
     double t1 = doubletime();
+
+    arraylist_free_with_all_elements(arr);
 
     long t_should = (n*5+1)*n/2;
     if(total != t_should)
