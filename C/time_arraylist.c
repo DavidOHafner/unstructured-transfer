@@ -12,7 +12,7 @@ void * ptr(int x){
 
 int main() {
 
-  for(int n = 1000;; n*=1.1) {
+  for(int n = 4;; n*=1.4) {
 
     double t0 = doubletime();
 
@@ -42,8 +42,9 @@ int main() {
     double t = t1-t0;
     double k = n*7;
 
-    printf("n = %d, K = %lf\n", n, 600*1000*1000/k*t);//  from n = 10,000 to 2,000,000, K = 23.0, with higher n, the system runs low and out of memory.
-
+    printf("n = %d, K = %lf\n", n, 600*1000*1000/k*t);
+    //mathLAN remote  from n = 10,000 to 2,000,000, K = 23.0, with higher n, the system runs low and out of memory.
+    //MacBook Air     from n = 50,000 to 5,000,000, K = 53.0, with higher n, the system runs low on memory.
   }
 }
 

@@ -1,80 +1,72 @@
-#include "heap.h"
+#include "heap2.h"
 #include "utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 
 struct Heap {
-  Heap * children[2];
   int size;
-  double value;
-  void * payload;
+  Heap * left; Heap * right;
+  HeapEntry entry;
 };
 
-Heap * heap_new() {
-  return NULL;//A null heap is empty, but not the only epty heap.
+Heap * heap_new() {//TODO Large empty heaps makes for high space overhead.
+  Heap * out = alloc(Heap);
+  out->size = 0;
+  return out;
 }
 
 int heap_size(Heap * h) {
-  return h?h->size:0;
+  return h->size;
 }
 
 void heap_free(Heap * h) {
-  while(h)
+  while(heap_size(h))
     heap_pop(h);
   free(h);
 }
 
-void heap_push(Heap * h, HeapEntry * entry) {
-  Heap ** ch = h->children;
-  int i = heap_size(ch[0]) <= heap_size(ch[1]) ? 0 : 1;
-  if(!h->children[i]) {
-    ch[i] = alloc(Heap);
-    ch[i]->children[0] = NULL;
-    ch[i]->children[1] = NULL;
-    ch[i]->size = 1;
-    ch[i]->value = entry->value;
-    ch[i]->payload = entry->payload;
+void heap_push(Heap * h, HeapEntry entry) {
+  if(h->size++) {
+    if(entry.value < h->entry.value) // Propagate the higher value
+      SWAP(HeapEntry, entry, h->entry) // Entry is now the higher value
+
+    if(heap_size(h->left) < heap_size(h->right))
+      heap_push(h->left, entry);
+    else
+      heap_push(h->right, entry);
   }
   else {
-    heap_push(ch[i], entry);
-    h->size++;
-    if(ch[i]->value < h->value) {
-      double tval = ch[i]->value;
-      void * tpay = ch[i]->payload;
-      ch[i]->value = h->value;
-      ch[i]->payload = h->payload;
-      h->value = tval;
-      h->payload = tpay;
-    }
+    h->left = heap_new();
+    h->right = heap_new();
+    h->entry = entry;
   }
 }
 
-Heap * trickledown(Heap * h) {
-  int i = !h->children[1] || (h->children[0] && h->children[0]->value < h->children[1]->value) ? 0 : 1;
-  Heap * newroot = h->children[i];
-  newroot->children[0] = trickledown(newroot);
-  newroot->children[1] = h->children[1-i];
-  newroot->size = h->size-1;
-  return newroot;
+HeapEntry heap_peek(Heap * h) {
+  return h->entry;
 }
-HeapEntry * heap_pop(Heap * h) {
-  if(!h)
+
+void heap_remove(Heap * h) {
+  if(--h->size) {
+    if(!heap_size(h->right) || (heap_size(h->left) && h->left->entry.value < h->right->entry.value)) {
+      h->entry = h->left->entry;
+      heap_remove(h->left);
+    }
+    else {
+      h->entry = h->right->entry;
+      heap_remove(h->right);
+    }
+  }
+  else {
+    free(h->left);
+    free(h->right);
+  }
+}
+
+HeapEntry heap_pop(Heap * h) {
+  if(!heap_size(h))
     printf("Pop from empty heap\n");
-  
-  HeapEntry * out = alloc(HeapEntry);
-  out->value = h->value;
-  out->payload = h->payload;
-
-  int i = !h->children[1] || (h->children[0] && h->children[0]->value < h->children[1]->value) ? 0 : 1;
-  Heap * cpyfrom = h->children[i];
-  
-  h->children[0] = trickledown(cpyfrom);
-  h->children[1] = h->children[1-i];
-  h->size--;
-  h->value = cpyfrom->value;
-  h->payload = cpyfrom->payload;
-
-  free(cpyfrom);
-  
+  HeapEntry out = heap_peek(h);
+  heap_remove(h);
   return out;
 }
