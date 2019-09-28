@@ -1,11 +1,11 @@
 #include "timetestgen.h"
-#include "heap2.h"
+#include "heap.h"
 
 HeapEntry entry(double x, int y) {
   return (HeapEntry) {x, ptr_to_int(y)};
 }
 
-start(int, 1, *= 2)
+start(int, 100, *= 2)
 
 Heap * h = heap_new();
 
@@ -50,3 +50,6 @@ if(total)
   printf("Computational Inaccuracy: n=%d, total=%ld\n", n, total);
 
 end(n*log(n)*6)
+
+//K = 50
+
