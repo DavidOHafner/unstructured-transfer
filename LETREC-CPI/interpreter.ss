@@ -137,9 +137,19 @@
           (null?1-cont (saved-cont)
             (apply-cont saved-cont (bool-val (null? (expval->list val)))))
           (car1-cont (saved-cont)
-            (apply-cont saved-cont (car (expval->list val))))
+            (if (null? (expval->list val))
+              (report-empty-list-access-error 'car)
+              (apply-cont saved-cont (car (expval->list val)))))
           (cdr1-cont (saved-cont)
-            (apply-cont saved-cont (list-val (cdr (expval->list val))))))))));end CHANGE
+            (if (null? (expval->list val))
+              (report-empty-list-access-error 'cdr)
+              (apply-cont saved-cont (list-val (cdr (expval->list val)))))))));end CHANGE
+  
+    (define report-empty-list-access-error
+      (lambda (type)
+        (eopl:error 'apply-cont
+                    "~s was applied to an empty list."
+                    type)))))
 
 ;;; As mentioned above,
 ;;; the procedure definitions are derived from
