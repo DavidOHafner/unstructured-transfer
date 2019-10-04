@@ -6,8 +6,10 @@
 ;;; Department of Computer Science
 ;;; Grinnell College
 
+;;; Edited by Samantha Hafner
+
 ;;; created February 8, 2009
-;;; last revised September 26, 2019
+;;; last revised October 4, 2019
 
 ;;; This library defines a data type
 ;;; for expressed values of the LETREC programming language,
@@ -20,24 +22,40 @@
 ;;; The two datatypes are presented together
 ;;; because they are mutually recursive.
 
+;;; Extention to add lists as an expressed value are by
+;;; Samantha Orion Hafner according to specifications by
+;;; John David Stone. All code changes noted.
+
 (define-library (LETREC expvals-and-environments)
   (export expval? num-val bool-val proc-val expval->num expval->bool expval->proc
           proc? a-proc environment? empty-env extend-env extend-env-rec apply-env
-          init-env)
+          init-en
+          list-val expval->list);CHANGED to export constructor and access for list expressed values
   (import (scheme base)
           (utilities eopl)
           (LETREC syntax-trees))
   (begin
 
     ;; An expressed value in LETREC
-    ;; is either an exact integer, a Boolean,
-    ;; or a value of the proc (i.e., closure) data type
+    ;; is either an exact integer, a Boolean, a list
+    ;; or a value of the proc (i.e., closure) data types
     ;; defined below.
 
     (define-datatype expval expval?
       (num-val (num exact-integer?))
       (bool-val (bool boolean?))
+      (list-val (lst list?));CHANGED to add list as expval
       (proc-val (proc proc?)))
+
+    ;; The following datatype could be used to enforce the requierement
+    ;; that the second argument to cons must be a list without the use of
+    ;; scheme's buildin list? function which may have a time complexity
+    ;; of O(n), but there is a space tradeoff, and I opted for the most
+    ;; conservative change which utilizes scheme's builtin list?.
+
+    ;(define-datatype list list?
+    ;  (empty-list)                
+    ;  (nonempty-list (car expval?) (cdr list?)))
 
     ;; We supplement the data type interface
     ;; with projection functions that recover the values
@@ -68,6 +86,14 @@
         (cases expval val
           (bool-val (bool) bool)
           (else (report-expval-extraction-error 'bool val)))))
+
+    ;; expval->list : ExpVal -> List
+
+    (define expval->list;CHANGED to define prejection function to recover scheme list from list-val
+      (lambda (val)
+        (cases expval val
+          (list-val (lst) lst)
+          (else (report-expval-extraction-error 'list val)))))
 
     ;; expval->proc : ExpVal -> Proc
 
@@ -177,3 +203,7 @@
 ;;; are copyright (C) 2009, 2015, 2019 by John David Stone
 ;;; and are similarly licensed
 ;;; under the Creative Commons Attribution-Noncommercial 3.0 Unported license.
+
+;;; The extention to add lists as an expressed value and coresponding tests, if any,
+;;; are copytight (C) 2019 by Samantha Orion Hafner and are likewise released
+;;; under the Creative Commons Attribution-Noncommercial 3.0 Unported License.

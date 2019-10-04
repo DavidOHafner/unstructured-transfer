@@ -6,14 +6,20 @@
 ;;; Department of Computer Science
 ;;; Grinnell College
 
+;;; Edited by Samantha Hafner
+
 ;;; created February 8, 2009
-;;; last revised July 25, 2019
+;;; last revised October 4, 2019
 
 ;;; This file provides a scanner
 ;;; for the LETREC language
 ;;; developed by Daniel P. Friedman and Mitchell Wand
 ;;; in section 3.4 of their book
 ;;; _Essentials of programming languages_ (third edition).
+
+;;; Extention to add lists as an expressed value are by
+;;; Samantha Orion Hafner according to specifications by
+;;; John David Stone. All code changes noted.
 
 (define-library (LETREC scanner)
   (export scanner)
@@ -186,6 +192,11 @@
                    ((in) (in-token))
                    ((proc) (proc-token))
                    ((letrec) (letrec-token))
+                   ((emptylist) (emptylist-token));CHANGE to recongnize five new tokens
+                   ((cons) (cons-token))
+                   ((null?) (null?-token))
+                   ((car) (car-token))
+                   ((cdr) (cdr-token));end CHANGE
                    (else (identifier-token id)))))
               (else
                (source 'get)
@@ -313,3 +324,7 @@
 ;;; along with this program.
 ;;; If not, it is available on the World Wide Web
 ;;; at https://www.gnu.org/licenses/gpl.html.
+
+;;; The extention to add lists as an expressed value and coresponding tests, if any,
+;;; are copytight (C) 2019 by Samantha Orion Hafner and are likewise released
+;;; under the Creative Commons Attribution-Noncommercial 3.0 Unported License.

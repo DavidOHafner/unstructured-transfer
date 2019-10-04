@@ -6,8 +6,6 @@
 ;;; Department of Computer Science
 ;;; Grinnell College
 
-;;; Edited by Samantha Hafner
-
 ;;; This is an interpreter for the LETREC programming language
 ;;; using the continuation-passing style described in section 5.1
 ;;; of _Essentials of programming languages_, third edition
@@ -16,12 +14,8 @@
 ;;; The design and implementation extend,
 ;;; and are derived from, code published in that book.
 
-;;; Extention to add lists as an expressed value are by
-;;; Samantha Orion Hafner according to specifications by
-;;; John David Stone. All code changes noted.
-
 ;;; created March 3, 2009
-;;; last revised October 4, 2019
+;;; last revised July 19, 2019
 
 (define-library (LETREC-CPI interpreter)
   (export run)
@@ -74,16 +68,7 @@
                                         parameter
                                         procedure-body
                                         env)
-                        cont))
-          (emptylist-exp () (apply-cont cont (list-val '())));CHANGED to extend the continuation for or immediatly evaluate list expressions
-          (cons-exp (car-expression cdr-expression)
-            (value-of/k car-expression env (cons1-cont cdr-expression env cont)))
-          (null?-exp (testee)
-            (value-of/k testee env (null?1-cont cont)))
-          (car-exp (lst)
-            (value-of/k testee env (car1-cont cont)))
-          (cdr-exp (lst)
-            (value-of/k testee env (cdr1-cont cont))))));end CHANGE
+                        cont)))))
 
     ;; apply-procedure/k : Proc * ExpVal * Cont -> FinalAnswer
 
@@ -126,18 +111,7 @@
           (rand-cont (operator-value saved-cont)
             (apply-procedure/k (expval->proc operator-value)
                                val
-                               saved-cont))
-          (cons1-cont (cdr-expression env saved-cont);CHANGED to implement the execution of list expression opperations from the continuation.
-            (value-of/k cdr-expression env (diff2-cont val saved-cont)))
-          (cons2-cont (car-value saved-cont)
-            (apply-cont saved-cont (list-val (cons car-value
-                                                   (expval->list val)))))
-          (null?1-cont (saved-cont)
-            (apply-cont saved-cont (bool-val (null? (expval->list val)))))
-          (car1-cont (saved-cont)
-            (apply-cont saved-cont (car (expval->list val))))
-          (cdr1-cont (saved-cont)
-            (apply-cont saved-cont (list-val (cdr (expval->list val))))))))));end CHANGE
+                               saved-cont)))))))
 
 ;;; As mentioned above,
 ;;; the procedure definitions are derived from
@@ -148,8 +122,4 @@
 
 ;;; The port to R7RS Scheme is copyright (C) 2009, 2015, 2019 by John David Stone
 ;;; and is likewise released
-;;; under the Creative Commons Attribution-Noncommercial 3.0 Unported License.
-
-;;; The extention to add lists as an expressed value and coresponding tests, if any,
-;;; are copytight (C) 2019 by Samantha Orion Hafner and are likewise released
 ;;; under the Creative Commons Attribution-Noncommercial 3.0 Unported License.

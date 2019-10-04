@@ -7,10 +7,8 @@
 ;;; Grinnell College
 ;;; stone@cs.grinnell.edu
 
-;;; Edited by Samantha Hafner
-
 ;;; created March 3, 2009
-;;; last revised October 4, 2019
+;;; last revised July 25, 2019
 
 ;;; This module defines a data type
 ;;; for continuations in the LETREC programming language,
@@ -19,14 +17,9 @@
 ;;; (Cambridge, Massachusetts: The MIT Press, 2008; ISBN 978-0-262-06279-4),
 ;;; by Daniel P. Friedman and Mitchell Wand.
 
-;;; Extention to add lists as an expressed value are by
-;;; Samantha Orion Hafner according to specifications by
-;;; John David Stone. All code changes noted.
-
 (define-library (LETREC-CPI continuations)
   (export continuation? end-cont diff1-cont diff2-cont zero1-cont if-test-cont
-          let-exp-cont rator-cont rand-cont
-          cons1-cont cons2-cont null?-cont car-cont cdr-cont);CHANGED to export 5 new continuations
+          let-exp-cont rator-cont rand-cont)
   (import (scheme base)
           (utilities eopl)
           (LETREC syntax-trees)
@@ -51,17 +44,9 @@
                     (saved-cont continuation?))
       (rator-cont (operand expression?)
                   (env environment?)
-                  (saved-cont continuation?));CHANGED to export 5 new continuations
+                  (saved-cont continuation?))
       (rand-cont (operator-value expval?)
-                 (saved-cont continuation?))
-      (cons1-cont (cdr-expression expression?)
-                  (env environment?)
-                  (saved-cont continuation?))
-      (cons2-cont (car-value expval?)
-                  (saved-cont continuation?))
-      (null?1-cont (saved-cont continuation?))
-      (car1-cont (saved-cont continuation?))
-      (cdr1-cont (saved-cont continuation?)))));end CHANGE
+                 (saved-cont continuation?)))))
 
 ;;; This definition is derived from the work
 ;;; of Friedman and Wand, who made their versions available at
@@ -73,7 +58,3 @@
 ;;; is copyright (C) 2009, 2015, 2019 by John David Stone
 ;;; and is likewise released
 ;;; under the Creative Commons Attribution-Noncommercial 3.0 Unported license.
-
-;;; The extention to add lists as an expressed value and coresponding tests, if any,
-;;; are copytight (C) 2019 by Samantha Orion Hafner and are likewise released
-;;; under the Creative Commons Attribution-Noncommercial 3.0 Unported License.

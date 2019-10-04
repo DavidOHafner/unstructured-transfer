@@ -6,8 +6,10 @@
 ;;; Department of Computer Science
 ;;; Grinnell College
 
+;;; Edited by Samantha Hafner
+
 ;;; created February 8, 2009
-;;; last revised July 25, 2019
+;;; last revised October 4, 2019
 
 ;;; This library defines a data type
 ;;; for lexical tokens of the LETREC programming language,
@@ -16,16 +18,21 @@
 ;;; (Cambridge, Massachusetts: The MIT Press, 2008; ISBN 978-0-262-06279-4),
 ;;; by Daniel P. Friedman and Mitchell Wand.
 
-;;; LETREC has tokens of fifteen kinds:
+;;; Extention to add lists as an expressed value are by
+;;; Samantha Orion Hafner according to specifications by
+;;; John David Stone. All code changes noted.
+
+;;; this version of LETREC has tokens of twenty kinds:
 ;;; "numbers" (actually, numerals),
 ;;; identifiers, minus signs, open- and close-parentheses,
 ;;; commas, equals signs,
-;;; and the keywords zero?, if, then, else, let, in, proc, and letrec.
+;;; and the keywords zero?, if, then, else, let, in, proc, letrec, emptylist, cons, null?, car, cdr.
 
 (define-library (LETREC tokens)
   (export token? numeral-token minus-sign open-parenthesis comma
           close-parenthesis zero?-token if-token then-token else-token
-          identifier-token let-token equals-sign in-token proc-token letrec-token)
+          identifier-token let-token equals-sign in-token proc-token letrec-token
+          emptylist-token cons-token null?-token car-token cdr-token);CHANGE to export five new tokens
   (import (scheme base)
           (utilities eopl))
   (begin
@@ -48,7 +55,12 @@
       (equals-sign)
       (in-token)
       (proc-token)
-      (letrec-token))))
+      (letrec-token)
+      (emptylist-token);CHANGE to add five new tokens
+      (cons-token)
+      (null?-token)
+      (car-token)
+      (cdr-token))));end CHANGE
 
 ;;; Copyright (C) 2009, 2015, 2019  John David Stone
 
@@ -71,3 +83,7 @@
 ;;; along with this program.
 ;;; If not, it is available on the World Wide Web
 ;;; at https://www.gnu.org/licenses/gpl.html.
+
+;;; The extention to add lists as an expressed value and coresponding tests, if any,
+;;; are copytight (C) 2019 by Samantha Orion Hafner and are likewise released
+;;; under the Creative Commons Attribution-Noncommercial 3.0 Unported License.

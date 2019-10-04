@@ -6,13 +6,19 @@
 ;;; Department of Computer Science
 ;;; Grinnell College
 
+;;; Edited by Samantha Hafner
+
 ;;; created February 8, 2009
-;;; last revised July 31, 2019
+;;; last revised October 4, 2019
 
 ;;; This library provides a parser for the LETREC language
 ;;; developed by Daniel P. Friedman and Mitchell Wand
 ;;; in section 3.4 of their book
 ;;; _Essentials of programming languages_ (third edition).
+
+;;; Extention to add lists as an expressed value are by
+;;; Samantha Orion Hafner according to specifications by
+;;; John David Stone. All code changes noted.
 
 (define-library (LETREC parser)
   (export parse-program parse-expression scan&parse)
@@ -142,11 +148,30 @@
             (proc-token ()
               (parse-proc-exp token-source))
 
-            ;; <expression> ::= letrec <identifier> ( <identifier> ) = <expression>
-            ;;                    in <expression>
+            ;; <expression> ::= emptylist
 
-            (letrec-token ()
-              (parse-letrec-exp token-source))))))
+            (emptylist-token ();CHANGED to add calls to parsers for five new expression types
+              (parse-emptylist-exp token-source))
+
+            ;; <expression> ::= cons ( <expression> , <expression> )
+
+            (emptylist-token ()
+              (parse-cons-exp token-source))
+
+            ;; <expression> ::= null? ( <expression> )
+
+            (emptylist-token ()
+              (parse-null?-exp token-source))
+
+            ;; <expression> ::= car ( <expression> )
+
+            (emptylist-token ()
+              (parse-car-exp token-source))
+
+            ;; <expression> ::= cdr ( <expression> )
+
+            (emptylist-token ()
+              (parse-cdr-exp token-source))))));end CHANGE
 
     ;; report-bad-initial-token-error : String -> ()
 
@@ -278,6 +303,52 @@
                             procedure-body
                             letrec-body)))))))
 
+    ;; parse-emptylist-exp : Token-source -> EmptylistExp
+
+    (define parse-emptylist-exp;CHANGED to implement parserss for five new expression types
+      (lambda (token-source)
+        (emptylist-exp)))
+
+    ;; parse-emptylist-exp : Token-source -> ConsExp
+
+    (define parse-cons-exp
+      (lambda (token-source)
+        (match-and-discard token-source 'open-parenthesis)
+        (let ((car-expression (parse-expression token-source)))
+          (match-and-discard token-source 'comma)
+          (let ((cdr-expression (parse-expression token-source)))
+            (match-and-discard 'close-parenthesis)
+            (cons-exp car-expression cdr-expression)))))
+
+    ;; parse-emptylist-exp : Token-source -> Null?Exp
+
+    (define parse-null?-exp
+      (lambda (token-source)
+        (match-and-discard token-source 'open-parenthesis)
+        (let ((expression (parse-expression token-source)))
+          (match-and-discard token-source 'close-parenthesis)
+          (null?-exp expression))))
+
+    ;; parse-emptylist-exp : Token-source -> CarExp
+
+    (define parse-car-exp
+      (lambda (token-source)
+        (match-and-discard token-source 'open-parenthesis)
+        (let ((expression (parse-expression token-source)))
+          (match-and-discard token-source 'close-parenthesis)
+          (car-exp expression))))
+
+    ;; parse-emptylist-exp : Token-source -> CdrExp
+
+    (define parse-cdr-exp
+      (lambda (token-source)
+        (match-and-discard token-source 'open-parenthesis)
+        (let ((expression (parse-expression token-source)))
+          (match-and-discard token-source 'close-parenthesis)
+          (cdr-exp expression))));end CHANGE
+
+
+
     ;; The scan&parse procedure
     ;; takes a string or an input port as its argument
     ;; and returns a syntax tree for the program
@@ -320,3 +391,7 @@
 ;;; along with this program.
 ;;; If not, it is available on the World Wide Web
 ;;; at https://www.gnu.org/licenses/gpl.html.
+
+;;; The extention to add lists as an expressed value and coresponding tests, if any,
+;;; are copytight (C) 2019 by Samantha Orion Hafner and are likewise released
+;;; under the Creative Commons Attribution-Noncommercial 3.0 Unported License.
