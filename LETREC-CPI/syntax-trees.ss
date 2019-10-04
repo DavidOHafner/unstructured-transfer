@@ -26,7 +26,7 @@
   (export program? a-program
           expression? const-exp diff-exp zero?-exp if-exp var-exp let-exp
           proc-exp call-exp letrec-exp
-          emptylist-exp cons-exp null?-exp car-exp cdr-exp);CHANGED to export five new expression types
+          emptylist-exp cons-exp null?-exp car-exp cdr-exp);CHANGED to export new expression types
   (import (scheme base)
           (utilities eopl))
   (begin

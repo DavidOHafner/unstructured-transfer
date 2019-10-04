@@ -32,7 +32,7 @@
   (export token? numeral-token minus-sign open-parenthesis comma
           close-parenthesis zero?-token if-token then-token else-token
           identifier-token let-token equals-sign in-token proc-token letrec-token
-          emptylist-token cons-token null?-token car-token cdr-token);CHANGE to export five new tokens
+          emptylist-token cons-token null?-token car-token cdr-token);CHANGE to export new tokens
   (import (scheme base)
           (utilities eopl))
   (begin

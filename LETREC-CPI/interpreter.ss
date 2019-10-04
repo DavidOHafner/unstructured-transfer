@@ -75,7 +75,8 @@
                                         procedure-body
                                         env)
                         cont))
-          (emptylist-exp () (apply-cont cont (list-val '())));CHANGED to extend the continuation for or immediatly evaluate list expressions
+          (emptylist-exp () (apply-cont cont (list-val '())));CHANGED to extend the continuation for
+                                                            ;or immediatly evaluate list expressions
           (cons-exp (car-expression cdr-expression)
             (value-of/k car-expression env (cons1-cont cdr-expression env cont)))
           (null?-exp (testee)
@@ -127,7 +128,8 @@
             (apply-procedure/k (expval->proc operator-value)
                                val
                                saved-cont))
-          (cons1-cont (cdr-expression env saved-cont);CHANGED to implement the execution of list expression opperations from the continuation.
+          (cons1-cont (cdr-expression env saved-cont);CHANGED to implement the execution of list
+                                                     ;expression opperations from the continuation.
             (value-of/k cdr-expression env (diff2-cont val saved-cont)))
           (cons2-cont (car-value saved-cont)
             (apply-cont saved-cont (list-val (cons car-value
