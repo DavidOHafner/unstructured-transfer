@@ -82,9 +82,9 @@
           (null?-exp (testee)
             (value-of/k testee env (null?1-cont cont)))
           (car-exp (lst)
-            (value-of/k testee env (car1-cont cont)))
+            (value-of/k lst env (car1-cont cont)))
           (cdr-exp (lst)
-            (value-of/k testee env (cdr1-cont cont))))));end CHANGE
+            (value-of/k lst env (cdr1-cont cont))))));end CHANGE
 
     ;; apply-procedure/k : Proc * ExpVal * Cont -> FinalAnswer
 
@@ -130,7 +130,7 @@
                                saved-cont))
           (cons1-cont (cdr-expression env saved-cont);CHANGED to implement the execution of list
                                                      ;expression opperations from the continuation.
-            (value-of/k cdr-expression env (diff2-cont val saved-cont)))
+            (value-of/k cdr-expression env (cons2-cont val saved-cont)))
           (cons2-cont (car-value saved-cont)
             (apply-cont saved-cont (list-val (cons car-value
                                                    (expval->list val)))))
@@ -150,6 +150,55 @@
         (eopl:error 'apply-cont
                     "~s was applied to an empty list."
                     type)))))
+
+
+;;Tests
+(import (scheme write))
+
+;should be num-val 0
+(display (run "0"))
+(newline)
+;should be num-val 0
+(display (run "-(1, 0)"))
+(newline)
+;should be list '()
+(display (run "emptylist"))
+(newline)
+;should be list (1)
+(display (run "cons(1, emptylist)"))
+(newline)
+;should be list (1 2)
+(display (run "cons(1, cons(2, emptylist))"))
+(newline)
+;should be 3
+(display (run "
+let l-123 = cons(1, cons(2, cons(3, emptylist))) in
+ let l-lll = cons(l-123, cons(l-123, cons(l-123, emptylist))) in
+  car(cdr(cdr(car(cdr(l-lll)))))
+"))
+(newline)
+;should be 6
+(display (run "
+letrec sum(list) = if null?(list) then 0 else -((sum cdr(list)), -(0, car(list))) in
+ (sum cons(1, cons(2, cons(3, emptylist))))
+"))
+(newline)
+;should be 51
+(display (run "
+letrec sumif(list) = if null?(list) then 0 else if car(car(list)) then -((sumif cdr(list)), -(0, car(cdr(car(list))))) else (sumif cdr(list)) in
+ let make = proc (test) proc (val) cons(test, cons(val, emptylist)) in
+  let true = zero?(0) in let false = zero?(1) in
+  (sumif cons(((make true) 3), cons(((make false) 13), cons(((make true) 31), cons(((make true) 17), cons(((make false) 71), emptylist))))))
+"))
+(newline)
+
+;Error tests
+;(run "cons(1, 1)") ;expval->list should fail
+;(run "null?(1)") ;expval->list should fail
+;(run "car(zero?(1))") ;expval->list should fail
+;(run "car(emptylist)") ;should specify car to empty list error
+;(run "cdr(emptylist)") ;should specify cdr to empty list error
+
 
 ;;; As mentioned above,
 ;;; the procedure definitions are derived from

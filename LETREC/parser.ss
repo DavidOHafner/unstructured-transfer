@@ -148,6 +148,12 @@
             (proc-token ()
               (parse-proc-exp token-source))
 
+            ;; <expression> ::= letrec <identifier> ( <identifier> ) = <expression>
+            ;;                    in <expression>
+
+            (letrec-token ()
+              (parse-letrec-exp token-source))
+
             ;; <expression> ::= emptylist
 
             (emptylist-token ();CHANGED to add calls to parsers for five new expression types
@@ -155,22 +161,22 @@
 
             ;; <expression> ::= cons ( <expression> , <expression> )
 
-            (emptylist-token ()
+            (cons-token ()
               (parse-cons-exp token-source))
 
             ;; <expression> ::= null? ( <expression> )
 
-            (emptylist-token ()
+            (null?-token ()
               (parse-null?-exp token-source))
 
             ;; <expression> ::= car ( <expression> )
 
-            (emptylist-token ()
+            (car-token ()
               (parse-car-exp token-source))
 
             ;; <expression> ::= cdr ( <expression> )
 
-            (emptylist-token ()
+            (cdr-token ()
               (parse-cdr-exp token-source))))));end CHANGE
 
     ;; report-bad-initial-token-error : String -> ()
@@ -317,7 +323,7 @@
         (let ((car-expression (parse-expression token-source)))
           (match-and-discard token-source 'comma)
           (let ((cdr-expression (parse-expression token-source)))
-            (match-and-discard 'close-parenthesis)
+            (match-and-discard token-source 'close-parenthesis)
             (cons-exp car-expression cdr-expression)))))
 
     ;; parse-emptylist-exp : Token-source -> Null?Exp

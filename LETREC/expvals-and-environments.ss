@@ -29,7 +29,7 @@
 (define-library (LETREC expvals-and-environments)
   (export expval? num-val bool-val proc-val expval->num expval->bool expval->proc
           proc? a-proc environment? empty-env extend-env extend-env-rec apply-env
-          init-en
+          init-env
           list-val expval->list);CHANGED to export constructor and access for list expressed values
   (import (scheme base)
           (utilities eopl)

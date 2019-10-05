@@ -26,7 +26,7 @@
 (define-library (LETREC-CPI continuations)
   (export continuation? end-cont diff1-cont diff2-cont zero1-cont if-test-cont
           let-exp-cont rator-cont rand-cont
-          cons1-cont cons2-cont null?-cont car-cont cdr-cont);CHANGED to export 5 new continuations
+          cons1-cont cons2-cont null?1-cont car1-cont cdr1-cont);CHANGED to export 5 new continuations
   (import (scheme base)
           (utilities eopl)
           (LETREC syntax-trees)
